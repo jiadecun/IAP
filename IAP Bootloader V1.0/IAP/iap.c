@@ -58,10 +58,32 @@ void iap_load_app(u32 appxaddr)
 	}
 }		 
 
+void write_flag(u32 flag)
+{
+	FLASH_Status status = FLASH_COMPLETE;
+	u32 addr=FLASH_FLAG_ADDR;
+	
+	while(1){
+		status=FLASH_EraseSector(FLASH_Sector_3,VoltageRange_3);//VCC=2.7~3.6VÖ®¼ä!!
+		if(status==FLASH_COMPLETE)
+			break;
+	}
+	while(1){
+		if(FLASH_ProgramWord(addr,flag)==FLASH_COMPLETE)
+			break;
+	}
+}
+u32 read_flag()
+{
+	u32 addr=FLASH_FLAG_ADDR;
+	return STMFLASH_ReadWord(addr);
+}
 
 
-
-
+int do_upddate_firm(u32 update_addr)
+{
+	return 0;
+}
 
 
 

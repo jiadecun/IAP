@@ -14,10 +14,21 @@
 //All rights reserved									  
 //////////////////////////////////////////////////////////////////////////////////    
 typedef  void (*iapfun)(void);				//定义一个函数类型的参数.   
-#define FLASH_APP1_ADDR		0x08010000  	//第一个应用程序起始地址(存放在FLASH)
+#define FLASH_BASE_ADDR		0x08000000  	
+#define FLASH_IAP_SIZE		0x00010000  	
+#define FLASH_FLAG_ADDR		(FLASH_BASE_ADDR+FLASH_IAP_SIZE-4)
+#define FLASH_RUN_ADDR		(FLASH_BASE_ADDR+FLASH_IAP_SIZE-8)
+#define FLASH_APP1_ADDR		(FLASH_BASE_ADDR+FLASH_IAP_SIZE)
+#define FLASH_APP1_SIZE		(0x00072800)
+#define FLASH_APP2_ADDR		(FLASH_BASE_ADDR+FLASH_IAP_SIZE+FLASH_APP1_SIZE)
+#define FLASH_APP2_SIZE		(0x00080000)
 											//保留0X08000000~0X0800FFFF的空间为Bootloader使用(共64KB)	   
 void iap_load_app(u32 appxaddr);			//跳转到APP程序执行
 void iap_write_appbin(u32 appxaddr,u8 *appbuf,u32 applen);	//在指定地址开始,写入bin
+void write_flag(u32 flag);
+u32 read_flag();
+int do_upddate_firm(u32 update_addr);
+#define BOOT_TRY_MAX_TIMES	10
 #endif
 
 
