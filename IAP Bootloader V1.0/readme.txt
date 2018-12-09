@@ -15,7 +15,5 @@ start:0x0801_0000 end:0x0808_27FF
 APP2：占用4个128K共计512K（sector8~11）
 start:0x0808_2800 end:0x080F_FFFF size:512kbyte
 
-
-0~32K 作为IAP
-32K~544K 存储APP1
-544K~1024K 存储APP2
+C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe --bin -o ..\OBJ\jia.bin ..\OBJ\jia.axf
+D:\MDK5.14\ARM\ARMCC\bin\fromelf.exe  --bin -o  ..\OBJ\TEST.bin ..\OBJ\TEST.axf

@@ -38,14 +38,13 @@ int main(void)
 	{
 		CHECK_FLAG=0;
 		flag = read_flag();
-		printf("flag=0x%x !\r\n",flag);
+		
 		if(flag==0xFFFFFFFF)
 		{
 			flag=0;
 			STMFLASH_Write(FLASH_FLAG_ADDR,&flag,1);
 			flag = read_flag();
 		}
-		flag=CHECK_FLAG;
 		
 		//STMFLASH_Read(FLASH_FLAG_ADDR,(u32 *)(&CHECK_FLAG), sizeof(u32));
 		printf("flag=0x%x !\r\n",flag);
@@ -97,6 +96,7 @@ int main(void)
 		
 		tmp[0]=run_addr;
 		tmp[1]=CHECK_FLAG;
+		printf("CHECK_FLAG=0x%x !\r\n",CHECK_FLAG);
 		STMFLASH_Write(FLASH_RUN_ADDR,tmp,2);
 		
 		{
