@@ -2,7 +2,12 @@
 #include "delay.h"
 #include "usart.h"
 #include "stmflash.h"
-#include "iap.h" 
+#include "iap.h"
+#include "sdio_sdcard.h"    
+#include "malloc.h" 
+#include "w25qxx.h"    
+#include "ff.h"  
+#include "exfuns.h" 
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32F407开发板
@@ -17,7 +22,7 @@
 ////////////////////////////////////////////////////////////////////////////////// 
 
 iapfun jump2app; 
-u32 iapbuf[512]; 	//2K字节缓存  
+u32 iapbuf[2048]; 	//2K字节缓存  
 //appxaddr:应用程序的起始地址
 //appbuf:应用程序CODE.
 //appsize:应用程序大小(字节).
@@ -79,9 +84,45 @@ u32 read_flag()
 	return STMFLASH_ReadWord(addr);
 }
 
-
+#define MAX_BUFF_SIZE   512
 int do_upddate_firm(u32 update_addr)
 {
+	FRESULT fr;
+    FATFS fs;
+    FIL fp;
+	u32 br=0;
+	u32 file_size=0;
+	u32 once=0;
+	unsigned char buf[MAX_BUFF_SIZE];
+	
+    /* Opens an existing file. If not exist, creates a new file. */
+    fr = f_open(&fp, "TEST.bin", FA_READ | FA_OPEN_ALWAYS);
+    if (fr != FR_OK) {
+		return -1;
+    }
+	printf("file_size=0x%x ",file_size);
+	file_size = fp.fsize;
+	printf("file_size=0x%x ",file_size);
+	do{
+		printf("file_size=0x%x ",file_size);
+		if(file_size > MAX_BUFF_SIZE)
+			once = MAX_BUFF_SIZE;
+		else
+			once = file_size;
+		fr = f_read (&fp, buf,	once, &br);
+		if(once != br)
+		{
+			printf("Read file failed ! \r\n");
+			break;
+		}else{
+			iap_write_appbin(update_addr + (fp.fsize - file_size), buf, once);
+			file_size -= once;
+		}
+		
+	}while(file_size>0);
+
+    f_close(&fp);
+
 	return 0;
 }
 
